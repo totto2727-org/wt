@@ -19,5 +19,7 @@ jobs:
           name: "totto2727-org/wt"
           rolling: true
           visibility: "public"
-          # Disable individual output-path publication to avoid unauthorized cache evaluation while publishing the flake.
+          # Skip FlakeHub's all-system pre-publish evaluation because this flake's cache-backed inputs are unavailable to that evaluator.
+          my-flake-is-too-big: true
+          # Do not register individual output paths for this flake.
           include-output-paths: false
