@@ -2,31 +2,63 @@
   lib,
   moonPlatform,
   moonRegistryIndex,
-  runCommand,
+  stdenv,
 }:
 let
+  dependencies = {
+    "totto2727/admiral" = "0.6.2";
+    "totto2727/lens" = "0.4.1";
+    "moonbitlang/async" = "0.20.3";
+  };
+  cachedRegistry = moonPlatform.buildCachedRegistry {
+    moonModDepsSet = dependencies;
+    registryIndexSrc = moonRegistryIndex;
+  };
+  moonHome = moonPlatform.bundleWithRegistry {
+    inherit cachedRegistry;
+  };
   packageSrc = lib.fileset.toSource {
-    root = ../..;
+    root = ./.;
     fileset = lib.fileset.unions [
       ./moon.mod
+      ./README.mbt.md
+      ./README.md
       ./src
     ];
   };
-  moonWork = builtins.toFile "wt-moon.work" ''
-    members = [
-      "./app/wt",
-    ]
-  '';
-  src = runCommand "wt-moonbit-workspace-source" { } ''
-    mkdir -p "$out"
-    cp -R ${packageSrc}/. "$out/"
-    cp ${moonWork} "$out/moon.work"
-  '';
 in
-moonPlatform.buildMoonPackage {
-  inherit src moonRegistryIndex;
-  moonMod = ./moon.mod;
-  moonFlags = [ "app/wt/src" ];
-  doCheck = false;
-  meta.mainProgram = "wt";
+stdenv.mkDerivation {
+  pname = "wt";
+  version = "0.1.3";
+  src = packageSrc;
+  nativeBuildInputs = [ moonHome ];
+  dontConfigure = true;
+  buildPhase = ''
+    runHook preBuild
+
+    writable_home="$TMPDIR/moon_home"
+    cp -rL ${moonHome} "$writable_home"
+    chmod -R u+w "$writable_home"
+    export MOON_HOME="$writable_home"
+    export HOME="$TMPDIR"
+
+    moon_bin="$MOON_HOME/bin/.moon-wrapped"
+    "$moon_bin" build --release --strip
+
+    runHook postBuild
+  '';
+  installPhase = ''
+    runHook preInstall
+
+    mkdir -p "$out/bin"
+    install -Dm755 _build/native/release/build/wt.exe "$out/bin/wt"
+
+    runHook postInstall
+  '';
+  meta = {
+    description = "Native MoonBit Git worktree manager with PR awareness";
+    homepage = "https://github.com/totto2727-org/wt";
+    license = lib.licenses.mit;
+    mainProgram = "wt";
+  };
 }

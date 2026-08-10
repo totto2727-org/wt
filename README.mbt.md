@@ -2,9 +2,24 @@
 
 Native MoonBit implementation of the `wt` Git worktree manager.
 
+## Usage
+
 ```bash
-moon run ./src --target native -- ls
-moon run ./src --target native -- cleanup --dry-run
+wt ls [directory]
+wt cleanup [directory] --dry-run
 ```
 
-`moon build --target native` writes the native executable under the repository-root `_build/native/` tree. Move it or grant execute permissions only at the point where you need to run or package that artifact.
+`ls` shows each worktree's branch, pull request state, Git state, and path. `cleanup` removes non-main worktrees only when their branch is pushed and its pull request is merged, closed, or absent. Use `--dry-run` to inspect eligible removals without changing the repository.
+
+## Development
+
+Enter the Nix development shell, then run the repository tasks:
+
+```bash
+nix develop
+moon check
+moon test
+moon package --list
+```
+
+Build the installable package with `nix build .#wt`.
