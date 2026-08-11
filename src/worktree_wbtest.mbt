@@ -108,7 +108,9 @@ async test "collect_worktree_statuses - starts all fetches before awaiting resul
   let result = @async.with_timeout_opt(1000, () => {
     collect_worktree_statuses(entry_array, fetch)
   })
-  guard result is Some(status_array)
+  guard result is Some(status_array) else {
+    fail("timed out collecting worktree statuses")
+  }
   assert_true(started.val == entry_array.length())
   assert_true(status_array[0].entry.path == "/repo/first")
   assert_true(status_array[1].entry.path == "/repo/second")
