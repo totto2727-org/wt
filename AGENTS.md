@@ -7,6 +7,7 @@ This file is the canonical developer and AI-agent guide for the native MoonBit `
 - `moon.mod` defines the `totto2727/wt` module, its dependencies, native target, package metadata, and root `README.md` entrypoint.
 - `README.mbt.md` is the physical module-level overview; root `README.md` is its relative symbolic link.
 - `src/moon.pkg` defines the executable package; `src/README.mbt.md` is its detailed canonical user-facing literate README.
+- `AGENTS.md` and `LICENSE` are root-owned artifacts; `src/` does not duplicate either file.
 - `src/main.mbt` constructs the `wt` CLI with Admiral.
 - `src/command_ls.mbt` implements worktree listing and its positional directory argument.
 - `src/command_cleanup.mbt` implements safe cleanup, dry-run output, and cleanup eligibility.
@@ -71,6 +72,7 @@ The native MoonBit executable is packaged through `package.nix` and exposed as `
 ## Package-specific rules
 
 - Preserve the MoonBit README layout: root `README.mbt.md` is the physical module overview with `README.md` as its relative symlink, while `src/README.mbt.md` is the detailed package README.
+- Keep `AGENTS.md` and `LICENSE` at the archive root; the package directory contains no `src/AGENTS.md` or `src/LICENSE` aliases.
 - Keep the README API section complete for the current CLI surface, including global options, command arguments, option aliases, and observable status values.
 - Do not add a separate `CLAUDE.md`; this repository uses `AGENTS.md` as its sole agent guide.
 - Keep repository-recorded artifacts in English and preserve the existing MIT license and attribution.
