@@ -93,13 +93,6 @@ $ wt cleanup --dry-run /path/to/repository
 $ wt cleanup -n
 ```
 
-```mbt check
-///|
-test "README MoonBit validation is executable" {
-  inspect(40 + 2, content="42")
-}
-```
-
 ## Development
 
 For repository structure, development commands, architecture, and contribution rules, see [AGENTS.md](../AGENTS.md).
