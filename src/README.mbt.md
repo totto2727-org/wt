@@ -2,7 +2,7 @@
 
 Native MoonBit implementation of the `wt` Git worktree manager for developers who want to inspect and safely clean up Git worktrees with GitHub pull-request awareness.
 
-This is the package-local canonical literate README. The repository root exposes it through the relative symbolic links `README.mbt.md -> src/README.mbt.md` and `README.md -> README.mbt.md`.
+This is the package-local canonical literate README. The module-level overview is [available at the repository root](../README.mbt.md).
 
 ## Usage
 
