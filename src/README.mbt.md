@@ -94,6 +94,7 @@ $ wt cleanup -n
 ```
 
 ```mbt check
+///|
 test "README MoonBit validation is executable" {
   inspect(40 + 2, content="42")
 }
@@ -101,10 +102,10 @@ test "README MoonBit validation is executable" {
 
 ## Development
 
-For repository structure, development commands, architecture, and contribution rules, see [AGENTS.md](../AGENTS.md).
+For repository structure, development commands, architecture, and contribution rules, see [AGENTS.md](./AGENTS.md).
 
 ## License
 
-MIT; see [LICENSE](../LICENSE).
+MIT; see [LICENSE](./LICENSE).
 
 _This README was generated from the [share-artifact skill](https://raw.githubusercontent.com/totto2727-org/agent/refs/heads/main/plugins/totto2727-coding/skills/share-artifact/SKILL.md) and [README template](https://raw.githubusercontent.com/totto2727-org/agent/refs/heads/main/plugins/totto2727-coding/skills/share-artifact/readme/template.md)._
