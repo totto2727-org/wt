@@ -6,6 +6,13 @@ For a shorter project overview, see the [repository README](../README.mbt.md).
 
 ## Usage
 
+Show the installed version:
+
+```console
+$ wt --version
+0.1.3
+```
+
 List worktrees from the current repository:
 
 ```console
@@ -37,6 +44,7 @@ Run `wt --help` for the top-level command list, or `wt <command> --help` for com
 - **Git**: Required for worktree discovery, status inspection, and cleanup.
 - **GitHub CLI (`gh`)**: Required for pull-request state lookup; without it, pull-request state may be reported as `unknown`.
 - **GitHub remote**: The repository must have an `origin` remote using an `https://github.com/...` or `git@github.com:...` URL for pull-request lookups.
+- **GitHub CLI authentication**: Run `gh auth login` when pull-request state is needed.
 
 ## Setup
 
@@ -44,18 +52,6 @@ Run `wt --help` for the top-level command list, or `wt <command> --help` for com
 
 ```bash
 nix profile install github:totto2727-org/wt
-```
-
-2. Verify the installation.
-
-```bash
-wt --version
-```
-
-3. Authenticate the GitHub CLI when pull-request state is needed.
-
-```bash
-gh auth login
 ```
 
 ## API

@@ -6,6 +6,13 @@ This module contains the installable `wt` executable. The detailed package READM
 
 ## Usage
 
+Show the installed version:
+
+```console
+$ wt --version
+0.1.3
+```
+
 List worktrees from the current repository:
 
 ```console
@@ -34,6 +41,7 @@ Done: 1 removed, 0 skipped (dry-run)
 
 - **Git**: Required for worktree discovery, status inspection, and cleanup.
 - **GitHub CLI (`gh`)**: Required for pull-request state lookup; without it, pull-request state may be reported as `unknown`.
+- **GitHub CLI authentication**: Run `gh auth login` when pull-request state is needed.
 - **Nix**: Required for the documented package installation path.
 
 ## Setup
@@ -42,12 +50,6 @@ Done: 1 removed, 0 skipped (dry-run)
 
 ```bash
 nix profile install github:totto2727-org/wt
-```
-
-2. Verify the installation.
-
-```bash
-wt --version
 ```
 
 ## API
