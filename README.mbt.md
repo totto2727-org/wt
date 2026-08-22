@@ -2,26 +2,18 @@
 
 Native MoonBit implementation of the `wt` Git worktree manager for inspecting and safely cleaning up worktrees with GitHub pull-request awareness.
 
-This module contains the installable `wt` executable. The detailed package README, including the complete command reference, is [available in `src/README.mbt.md`](./src/README.mbt.md).
-
 ## Usage
 
-List worktrees from the current repository:
+List worktrees from the current repository directly from Mooncakes:
 
 ```console
-$ wt ls
+$ moonx --target native totto2727/wt ls
 NAME BRANCH PR GIT PATH
 main main main pushed /path/to/repository
 feature feature OPEN(#42) committed /path/to/feature
 ```
 
-Preview eligible cleanup without changing files:
-
-```console
-$ wt cleanup --dry-run
-[dry-run] Would remove: /path/to/feature (feature, merged (pushed))
-Done: 1 removed, 0 skipped (dry-run)
-```
+The native target is required because `wt` is a native-only package. After installation, run `wt --help` for the top-level command list or `wt <command> --help` for command-specific options.
 
 ## Key features
 
@@ -34,28 +26,102 @@ Done: 1 removed, 0 skipped (dry-run)
 
 - **Git**: Required for worktree discovery, status inspection, and cleanup.
 - **GitHub CLI (`gh`)**: Required for pull-request state lookup; without it, pull-request state may be reported as `unknown`.
-- **Nix**: Required for the documented package installation path.
+- **GitHub remote**: The repository must have an `origin` remote using an `https://github.com/...` or `git@github.com:...` URL for pull-request lookups.
+- **GitHub CLI authentication**: Run `gh auth login` when pull-request state is needed.
+- **MoonBit or Nix**: Install the MoonBit toolchain for `moonx` and `moon install`, or Nix with flakes enabled for the Nix execution and installation paths.
 
 ## Setup
 
-1. Install the native package with Nix.
+Choose one of the following setup methods. Only one is required.
+
+### Run without installing
+
+Use either MoonBit:
+
+```bash
+moonx --target native totto2727/wt ls
+```
+
+or Nix:
+
+```bash
+nix run github:totto2727-org/wt -- ls
+```
+
+### Install the command
+
+Install with either MoonBit:
+
+```bash
+moon install totto2727/wt
+```
+
+or Nix:
 
 ```bash
 nix profile install github:totto2727-org/wt
 ```
 
-2. Verify the installation.
+### Add declaratively with Nix
 
-```bash
-wt --version
+Add the `wt` overlay and package to an existing `flake.nix`.
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    wt.url = "github:totto2727-org/wt";
+  };
+
+  outputs = { nixpkgs, wt, ... }:
+    let
+      system = "aarch64-darwin"; # Use x86_64-linux on Linux.
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ wt.overlays.default ];
+      };
+    in
+    {
+      devShells.${system}.default = pkgs.mkShell {
+        packages = [ pkgs.wt ];
+      };
+    };
+}
 ```
 
 ## API
 
-The module exposes the `wt` executable with `ls` and `cleanup` commands. See the [package API reference](./src/README.mbt.md#api) for command arguments, options, output fields, and cleanup rules.
+### `wt`
+
+Runs the worktree manager. The global `--help` (`-h`) option prints usage and commands, and `--version` (`-V`) prints the installed version.
 
 ```console
 $ wt --help
+```
+
+### `wt help`
+
+Prints help for the top-level command or a subcommand.
+
+```console
+$ wt help cleanup
+```
+
+### `wt ls [dir]`
+
+Lists worktrees for the Git repository at `dir`, or for the current directory when `dir` is omitted. Each row contains `NAME`, `BRANCH`, `PR`, `GIT`, and `PATH`. `PR` is `main`, `none`, `OPEN(#N)`, `MERGED(#N)`, `CLOSED(#N)`, or `unknown`; `GIT` is `dirty`, `committed`, or `pushed`.
+
+```console
+$ wt ls /path/to/repository
+```
+
+### `wt cleanup [dir] [--dry-run|-n]`
+
+Examines non-main worktrees for the repository at `dir`, or the current directory when `dir` is omitted. A worktree is eligible only when its branch is pushed and its pull request is merged, closed, or absent. Without `--dry-run`, eligible worktrees and their local branches are removed and Git worktree metadata is pruned. With `--dry-run` (or `-n`), removals are printed but no files or branches are changed.
+
+```console
+$ wt cleanup --dry-run /path/to/repository
+$ wt cleanup -n
 ```
 
 ## Development
