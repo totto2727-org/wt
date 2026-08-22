@@ -6,31 +6,16 @@ For a shorter project overview, see the [repository README](../README.mbt.md).
 
 ## Usage
 
-Show the installed version:
+List worktrees from the current repository directly from Mooncakes:
 
 ```console
-$ wt --version
-0.1.3
-```
-
-List worktrees from the current repository:
-
-```console
-$ wt ls
+$ moonx --target native totto2727/wt ls
 NAME BRANCH PR GIT PATH
 main main main pushed /path/to/repository
 feature feature OPEN(#42) committed /path/to/feature
 ```
 
-Preview eligible cleanup without changing files:
-
-```console
-$ wt cleanup --dry-run
-[dry-run] Would remove: /path/to/feature (feature, merged (pushed))
-Done: 1 removed, 0 skipped (dry-run)
-```
-
-Run `wt --help` for the top-level command list, or `wt <command> --help` for command-specific options.
+The native target is required because `wt` is a native-only package. After installation, run `wt --help` for the top-level command list or `wt <command> --help` for command-specific options.
 
 ## Key features
 
@@ -45,13 +30,47 @@ Run `wt --help` for the top-level command list, or `wt <command> --help` for com
 - **GitHub CLI (`gh`)**: Required for pull-request state lookup; without it, pull-request state may be reported as `unknown`.
 - **GitHub remote**: The repository must have an `origin` remote using an `https://github.com/...` or `git@github.com:...` URL for pull-request lookups.
 - **GitHub CLI authentication**: Run `gh auth login` when pull-request state is needed.
+- **MoonBit or Nix**: Install the MoonBit toolchain for `moonx` and `moon install`, or Nix with flakes enabled for the Nix execution and installation paths.
 
 ## Setup
 
-1. Install the native package with Nix.
+1. Run `wt` directly without installing it.
 
 ```bash
+moonx --target native totto2727/wt ls
+nix run github:totto2727-org/wt -- ls
+```
+
+2. Install `wt` with MoonBit or Nix.
+
+```bash
+moon install totto2727/wt
 nix profile install github:totto2727-org/wt
+```
+
+3. Add the `wt` overlay and package to an existing `flake.nix`.
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    wt.url = "github:totto2727-org/wt";
+  };
+
+  outputs = { nixpkgs, wt, ... }:
+    let
+      system = "aarch64-darwin"; # Use x86_64-linux on Linux.
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ wt.overlays.default ];
+      };
+    in
+    {
+      devShells.${system}.default = pkgs.mkShell {
+        packages = [ pkgs.wt ];
+      };
+    };
+}
 ```
 
 ## API
