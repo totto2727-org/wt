@@ -33,21 +33,39 @@ The native target is required because `wt` is a native-only package. See the [pa
 
 ## Setup
 
-1. Run `wt` directly without installing it.
+Choose one of the following setup methods. Only one is required.
+
+### Run without installing
+
+Use either MoonBit:
 
 ```bash
 moonx --target native totto2727/wt ls
+```
+
+or Nix:
+
+```bash
 nix run github:totto2727-org/wt -- ls
 ```
 
-2. Install `wt` with MoonBit or Nix.
+### Install the command
+
+Install with either MoonBit:
 
 ```bash
 moon install totto2727/wt
+```
+
+or Nix:
+
+```bash
 nix profile install github:totto2727-org/wt
 ```
 
-3. Add the `wt` overlay and package to an existing `flake.nix`.
+### Add declaratively with Nix
+
+Add the `wt` overlay and package to an existing `flake.nix`.
 
 ```nix
 {
