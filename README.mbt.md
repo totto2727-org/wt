@@ -28,17 +28,19 @@ Run `wt --help` for the top-level command list or `wt <command> --help` for comm
 - **GitHub CLI (`gh`)**: Required for pull-request state lookup; without it, pull-request state may be reported as `unknown`.
 - **GitHub remote**: The repository must have an `origin` remote using an `https://github.com/...` or `git@github.com:...` URL for pull-request lookups.
 - **GitHub CLI authentication**: Run `gh auth login` when pull-request state is needed.
-- **MoonBit or Nix**: Install MoonBit for the `moon install` path, or Nix with flakes enabled for the Nix paths.
+- **MoonBit**: Install MoonBit to use `moonx` for one-shot execution or `moon install` for a global installation.
+- **Nix**: Enable flakes to use the Nix one-shot, profile, and consumer-flake paths.
 
 ## Setup
 
 Choose the access path that fits how you use the command.
 
-### Run once with Nix
+### Run once with MoonBit or Nix
 
 Run the packaged command without installing it globally:
 
 ```bash
+moonx --target native totto2727/wt ls
 nix run github:totto2727-org/wt#wt -- ls
 ```
 
@@ -55,8 +57,6 @@ Or install the Nix package into your profile:
 ```bash
 nix profile add github:totto2727-org/wt#wt
 ```
-
-`wt` is native-only, so `moonx` cannot run it: `moonx` requires a published WebAssembly asset.
 
 ### Add to a consumer flake
 
