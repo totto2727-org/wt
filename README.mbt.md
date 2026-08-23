@@ -4,16 +4,16 @@ Native MoonBit implementation of the `wt` Git worktree manager for inspecting an
 
 ## Usage
 
-List worktrees from the current repository directly from Mooncakes:
+List worktrees in the current repository:
 
 ```console
-$ moonx --target native totto2727/wt ls
+$ wt ls
 NAME BRANCH PR GIT PATH
 main main main pushed /path/to/repository
 feature feature OPEN(#42) committed /path/to/feature
 ```
 
-The native target is required because `wt` is a native-only package. After installation, run `wt --help` for the top-level command list or `wt <command> --help` for command-specific options.
+Run `wt --help` for the top-level command list or `wt <command> --help` for command-specific options.
 
 ## Key features
 
@@ -28,43 +28,39 @@ The native target is required because `wt` is a native-only package. After insta
 - **GitHub CLI (`gh`)**: Required for pull-request state lookup; without it, pull-request state may be reported as `unknown`.
 - **GitHub remote**: The repository must have an `origin` remote using an `https://github.com/...` or `git@github.com:...` URL for pull-request lookups.
 - **GitHub CLI authentication**: Run `gh auth login` when pull-request state is needed.
-- **MoonBit or Nix**: Install the MoonBit toolchain for `moonx` and `moon install`, or Nix with flakes enabled for the Nix execution and installation paths.
+- **MoonBit or Nix**: Install MoonBit for the `moon install` path, or Nix with flakes enabled for the Nix paths.
 
 ## Setup
 
-Choose one of the following setup methods. Only one is required.
+Choose the access path that fits how you use the command.
 
-### Run without installing
+### Run once with Nix
 
-Use either MoonBit:
-
-```bash
-moonx --target native totto2727/wt ls
-```
-
-or Nix:
+Run the packaged command without installing it globally:
 
 ```bash
-nix run github:totto2727-org/wt -- ls
+nix run github:totto2727-org/wt#wt -- ls
 ```
 
-### Install the command
+### Install globally
 
-Install with either MoonBit:
+Install with MoonBit (the default destination is `~/.moon/bin`, which must be on your `PATH`):
 
 ```bash
 moon install totto2727/wt
 ```
 
-or Nix:
+Or install the Nix package into your profile:
 
 ```bash
-nix profile install github:totto2727-org/wt
+nix profile add github:totto2727-org/wt#wt
 ```
 
-### Add declaratively with Nix
+`wt` is native-only, so `moonx` cannot run it: `moonx` requires a published WebAssembly asset.
 
-Add the `wt` overlay and package to an existing `flake.nix`.
+### Add to a consumer flake
+
+Make `wt` available in a Nix development shell through the exported overlay:
 
 ```nix
 {
