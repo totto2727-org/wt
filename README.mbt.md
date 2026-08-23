@@ -29,7 +29,7 @@ Run `wt --help` for the top-level command list or `wt <command> --help` for comm
 - **GitHub remote**: The repository must have an `origin` remote using an `https://github.com/...` or `git@github.com:...` URL for pull-request lookups.
 - **GitHub CLI authentication**: Run `gh auth login` when pull-request state is needed.
 - **MoonBit**: Install MoonBit to use `moonx` for one-shot execution or `moon install` for a global installation.
-- **Nix**: Enable flakes to use the Nix one-shot, profile, and consumer-flake paths.
+- **Nix**: Enable flakes to use the Nix one-shot, profile, and consumer-flake paths. The exported package and overlay support exactly `aarch64-darwin` and `x86_64-linux`.
 
 ## Setup
 
@@ -38,6 +38,8 @@ Choose the access path that fits how you use the command.
 ### Run once with MoonBit or Nix
 
 Run the packaged command without installing it globally:
+
+The exported Nix package supports exactly `aarch64-darwin` and `x86_64-linux`.
 
 ```bash
 moonx --target native totto2727/wt ls
@@ -60,7 +62,7 @@ nix profile add github:totto2727-org/wt#wt
 
 ### Add to a consumer flake
 
-Make `wt` available in a Nix development shell through the exported overlay:
+Make `wt` available in a Nix development shell through the exported overlay. The overlay supports exactly `aarch64-darwin` and `x86_64-linux`:
 
 ```nix
 {
