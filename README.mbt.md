@@ -33,28 +33,23 @@ Run `wt --help` for the top-level command list or `wt <command> --help` for comm
 
 ## Setup
 
-### Run with MoonBit or Nix
+### Run without installing
 
 ```bash
 moonx --target native totto2727/wt ls
 nix run github:totto2727-org/wt#wt -- ls
 ```
 
-### Install globally
+### Install
 
-Install with MoonBit (the default destination is `~/.moon/bin`, which must be on your `PATH`):
+The MoonBit install destination is `~/.moon/bin`, which must be on your `PATH`.
 
 ```bash
 moon install totto2727/wt
-```
-
-Or install the Nix package into your profile:
-
-```bash
 nix profile add github:totto2727-org/wt#wt
 ```
 
-### Add to a Nix flake
+### Nix flake
 
 Add `wt` to a Nix development shell through the exported overlay:
 
