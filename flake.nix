@@ -27,12 +27,14 @@
         "x86_64-linux"
       ];
       forEachSystem = nixpkgs.lib.genAttrs supportedSystems;
-      mkPkgs = system:
+      mkPkgs =
+        system:
         import nixpkgs {
           inherit system;
           overlays = [ moonbit-overlay.overlays.default ];
         };
-      mkWt = pkgs:
+      mkWt =
+        pkgs:
         pkgs.callPackage ./package.nix {
           moonRegistryIndex = moon-registry;
         };
@@ -43,13 +45,18 @@
         let
           pkgs = mkPkgs system;
         in
-        {
+        rec {
           default = pkgs.mkShell {
             packages = [
               pkgs.git
               pkgs.moonbit-bin.moonbit.latest
             ];
+            shellHook = ''
+              # Enable Git Hook
+              vp config
+            '';
           };
+          ci = default.overrideAttrs (_: { shellHook = ""; });
         }
       );
 
