@@ -45,7 +45,7 @@
         let
           pkgs = mkPkgs system;
         in
-        {
+        rec {
           default = pkgs.mkShell {
             packages = [
               pkgs.git
@@ -56,6 +56,7 @@
               vp config
             '';
           };
+          ci = default.overrideAttrs (_: { shellHook = ""; });
         }
       );
 
